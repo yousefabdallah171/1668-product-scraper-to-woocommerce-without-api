@@ -533,270 +533,171 @@ def extract_product_info(html_content, url):
         log("Extracting product info from HTML content...")
         soup = BeautifulSoup(html_content, 'html.parser')
         
-        # Extract product name
+        # --- Product Name ---
         product_name = None
-        
-        # Try to extract product name from title tag first (most reliable)
-        title_tag = soup.find('title')
-        if title_tag and title_tag.text:
-            title_text = title_tag.text.strip()
-            if '-' in title_text:
-                product_name = title_text.split('-')[0].strip()
-            else:
-                product_name = title_text
-            log(f"Found product name from title tag")
-        
-        # If not found in title, try with meta tags
+        # Try to extract from #productTitle h1
+        title_h1 = soup.select_one('#productTitle h1')
+        if title_h1 and title_h1.text.strip():
+            product_name = title_h1.text.strip()
+            log(f"Found product name from #productTitle h1: {product_name}")
+        # Fallback to previous logic if not found
         if not product_name:
-            meta_title = soup.find('meta', {'property': 'og:title'}) or soup.find('meta', {'name': 'title'})
-            if meta_title and meta_title.get('content'):
-                product_name = meta_title.get('content').strip()
-                log(f"Found product name from meta tag")
+            title_tag = soup.find('title')
+            if title_tag and title_tag.text:
+                title_text = title_tag.text.strip()
+                if '-' in title_text:
+                    product_name = title_text.split('-')[0].strip()
+                else:
+                    product_name = title_text
+                log(f"Found product name from title tag")
         
-        # If still not found, try with regular selectors
-        if not product_name:
-            name_selectors = [
-                "h1.title", "h1.offer-title", "h1", 
-                ".title", ".offer-title", "[class*='title']", 
-                "[class*='name']"
-            ]
-            
-            for selector in name_selectors:
-                elements = soup.select(selector)
-                for element in elements:
-                    text = element.get_text().strip()
-                    if text and len(text) > 5:
-                        product_name = text
-                        log(f"Found product name from selector")
-                        break
-                if product_name:
-                    break
-        
-        # Extract price
-        price = None
-        
-        # Try to extract price with regular selectors first
-        price_selectors = [
-            ".mod-detail-price", ".price", "[class*='price']", 
-            ".value", ".amount", "[class*='amount']"
+        # --- Product Images ---
+        images = []
+        # 1. Main gallery images (preferred)
+        gallery_imgs = soup.select('#gallery img.od-gallery-img')
+        for img in gallery_imgs:
+            src = img.get('src')
+            if src and 'video' not in src and src not in images:
+                images.append(src)
+        preview_imgs = soup.select('#gallery img.preview-img')
+        for img in preview_imgs:
+            src = img.get('src')
+            if src and src not in images:
+                images.append(src)
+        # 2. Use robust extraction from JSON/scripts/meta/other selectors
+        extra_images = extract_images_from_1688(html_content, soup)
+        for img in extra_images:
+            if img and img not in images:
+                images.append(img)
+        # 3. Filter images: remove video, logo, icon, placeholder, duplicates
+        filtered_images = []
+        for img in images:
+            if (img and isinstance(img, str) and
+                any(x in img for x in ['.jpg', '.jpeg', '.png', '.webp']) and
+                not any(x in img.lower() for x in ['video', 'logo', 'icon', 'placeholder', 'spacer', 'pixel']) and
+                img not in filtered_images):
+                filtered_images.append(img)
+        # 4. Fallback: use placeholder if no images found
+        if not filtered_images:
+            filtered_images = ["https://via.placeholder.com/800x800?text=No+Image+Available"]
+        images = filtered_images
+        log(f"Extracted {len(images)} product images after filtering.")
+
+        # --- Product Description ---
+        description_html = None
+        # 1. Try all likely selectors and concatenate all matching blocks
+        desc_selectors = [
+            '#description .html-description',
+            '#description .module-od-product-description',
+            '.desc-content',
+            '#description',
         ]
-        
-        for selector in price_selectors:
-            elements = soup.select(selector)
-            for element in elements:
-                text = element.get_text().strip()
-                if text and ('¥' in text or '$' in text or '€' in text):
-                    price = text
-                    log(f"Found price: {price}")
-                    break
-            if price:
-                break
-                
-        # Try to extract price using regex as fallback
+        desc_blocks = []
+        for selector in desc_selectors:
+            blocks = soup.select(selector)
+            for block in blocks:
+                block_html = str(block)
+                if block_html and len(block_html) > 100:
+                    desc_blocks.append(block_html)
+        if desc_blocks:
+            description_html = '\n'.join(desc_blocks)
+            log(f"Found and concatenated {len(desc_blocks)} description blocks from selectors.")
+        # 2. Try detailUrl with retries and longer timeout if no HTML found
+        if not description_html:
+            import re, json, time
+            detail_url_match = re.search(r'"detailUrl"\s*:\s*"([^"]+)",?', html_content)
+            if detail_url_match:
+                detail_url = detail_url_match.group(1)
+                log(f"Found detailUrl for description: {detail_url}")
+                import requests
+                max_retries = 3
+                for attempt in range(max_retries):
+                    try:
+                        resp = requests.get(detail_url, timeout=30)
+                        if resp.status_code == 200 and len(resp.text) > 100:
+                            description_html = resp.text
+                            log(f"Fetched product description from detailUrl (attempt {attempt+1})")
+                            break
+                        else:
+                            log(f"detailUrl fetch attempt {attempt+1} failed: status {resp.status_code}")
+                    except Exception as e:
+                        log(f"Failed to fetch detailUrl (attempt {attempt+1}): {e}", "WARNING")
+                    time.sleep(2)
+        # 3. Fallback: largest visible HTML/text block
+        if not description_html:
+            candidates = soup.find_all(['div', 'section'], recursive=True)
+            best_block = None
+            best_len = 0
+            for c in candidates:
+                c_html = str(c)
+                c_len = len(c_html)
+                if c_len > best_len and c_len > 200 and ('img' in c_html or len(c.get_text(strip=True)) > 100):
+                    best_block = c_html
+                    best_len = c_len
+            if best_block:
+                description_html = best_block
+                log("Used fallback: largest visible HTML/text block")
+        # 4. Fallback: all <p> tags concatenated (no truncation)
+        if not description_html:
+            paragraphs = soup.find_all('p')
+            all_text = '\n'.join([p.get_text(strip=True) for p in paragraphs if p.get_text(strip=True)])
+            if all_text:
+                description_html = all_text
+                log("Used fallback: all <p> tags concatenated as description")
+        # 5. Log and save raw HTML if all fail
+        if not description_html:
+            description_html = "No description available."
+            log("No product description found, using fallback.")
+            try:
+                with open(f"failed_product_{hash(url)}.html", "w", encoding="utf-8") as f:
+                    f.write(html_content)
+                log(f"Saved raw HTML for failed product: failed_product_{hash(url)}.html", "WARNING")
+            except Exception as e:
+                log(f"Failed to save raw HTML: {e}", "WARNING")
+
+        # --- Product Price ---
+        price = None
+        price_span = soup.select_one('#mainPrice .price-info.currency')
+        if price_span:
+            price_text = ''.join(price_span.stripped_strings)
+            price = price_text.replace('¥', '').strip()
+            log(f"Found price from #mainPrice: {price}")
+        # Fallback: regex
         if not price:
             price_pattern = r'"price":"([^"]+)"'
             price_matches = re.findall(price_pattern, html_content)
             if price_matches:
-                price = f"¥{price_matches[0]}"
+                price = price_matches[0]
                 log(f"Found price via regex: {price}")
-        
-        # Extract description - Enhanced for 1688.com
-        description_parts = []
-        
-        # 1. Try to find description in common 1688 containers
-        desc_containers = [
-            # Main description containers
-            ".detail-desc", 
-            ".detail-description",
-            ".desc",
-            "#desc",
-            "#description",
-            
-            # Tab content that might contain descriptions
-            ".ui-box.detail-tab",
-            ".ui-box.detail-tab-content",
-            ".ui-box.detail-html",
-            
-            # Rich text content
-            ".detail-richtext",
-            ".rich-text-detail",
-            
-            # Fallback to any div with significant text
-            "div[class*='desc']",
-            "div[class*='detail']",
-            "div[class*='content']",
-            "div[class*='text']"
-        ]
-        
-        # 2. Try to find description in meta tags
-        meta_desc = soup.find('meta', {'property': 'og:description'}) or \
-                   soup.find('meta', {'name': 'description'}) or \
-                   soup.find('meta', {'name': 'keywords'})
-        if meta_desc and meta_desc.get('content'):
-            desc_text = meta_desc.get('content').strip()
-            if desc_text and len(desc_text) > 10:
-                description_parts.append(desc_text)
-                log(f"Found description from meta tag")
-        
-        # 3. Try to extract from script tags (common in 1688 SPA)
-        script_patterns = [
-            r'"desc"\s*:\s*"([^"]+)"',
-            r'"description"\s*:\s*"([^"]+)"',
-            r'"detail"\s*:\s*"([^"]+)"',
-            r'"content"\s*:\s*"([^"]+)"',
-            r'"html"\s*:\s*"([^"]+)"',
-            r'"text"\s*:\s*"([^"]+)"'
-        ]
-        
-        for pattern in script_patterns:
-            matches = re.findall(pattern, html_content)
-            for match in matches:
-                if len(match) > 50:  # Only consider meaningful matches
-                    clean_text = clean_description(match)
-                    if clean_text and clean_text not in description_parts:
-                        description_parts.append(clean_text)
-                        log(f"Found description in script tags")
-        
-        # 4. Try to extract from common 1688 description containers
-        seen_texts = set()
-        for selector in desc_containers:
-            try:
-                elements = soup.select(selector)
-                for element in elements:
-                    # Skip elements that are too small
-                    text = element.get_text(strip=True)
-                    if len(text) < 50:
-                        continue
-                        
-                    # Clean and add the text
-                    clean_text = clean_description(text)
-                    
-                    # Skip if we've seen this text before or it's too short
-                    if not clean_text or len(clean_text) < 50 or clean_text in seen_texts:
-                        continue
-                        
-                    # Add to seen texts to avoid duplicates
-                    seen_texts.add(clean_text)
-                    description_parts.append(clean_text)
-                    log(f"Found description with selector: {selector} ({len(clean_text)} characters)")
-                        
-            except Exception as e:
-                log(f"Error with selector '{selector}': {str(e)}", "DEBUG")
-                continue
-        
-        # Combine all description parts
-        description = "\n\n".join(description_parts) if description_parts else None
-        
-        # If still no description, try to extract from script tags (common in 1688 SPA)
-        if not description:
-            script_patterns = [
-                r'"description"\s*:\s*"([^"]+)"',
-                r'"desc"\s*:\s*"([^"]+)"',
-                r'"detail"\s*:\s*"([^"]+)"'
-            ]
-            
-            for pattern in script_patterns:
-                matches = re.findall(pattern, html_content)
-                for match in matches:
-                    if len(match) > 50:  # Only consider meaningful matches
-                        description = clean_description(match)
-                        log(f"Found description in script tags")
-                        break
-                if description:
-                    break
-        
-        # Extract all possible images with enhanced methods
-        all_images = set()
-        
-        # 1. Get images from standard extraction
-        images = extract_images_from_1688(html_content, soup)
-        if images:
-            all_images.update(images)
-            log(f"Found {len(images)} images via standard extraction")
-        
-        # 2. Get more images from debug extraction
-        debug_images = debug_extract_images_from_1688(html_content, soup, url)
-        if debug_images:
-            all_images.update(debug_images)
-            log(f"Found additional {len(debug_images)} images via debug extraction")
-            
-        # 3. Extract from script tags (common for 1688 galleries)
-        script_images = set()
-        img_patterns = [
-            r'"picUrl"\s*:\s*"([^"]+)"',
-            r'"imageUrl"\s*:\s*"([^"]+)"',
-            r'"imgUrl"\s*:\s*"([^"]+)"',
-            r'"url"\s*:\s*"(https?://[^\s"]+\.(?:jpg|jpeg|png|gif|webp))"',
-            r'src=[\'\"](https?://[^\s\'\"]+\.(?:jpg|jpeg|png|gif|webp))[\'\"]'
-        ]
-        
-        for pattern in img_patterns:
-            matches = re.findall(pattern, html_content)
-            for img_url in matches:
-                if isinstance(img_url, tuple):
-                    img_url = img_url[0]  # Handle capture groups
-                if img_url and 'http' in img_url and img_url not in all_images:
-                    clean_url = fix_image_url(img_url)
-                    if clean_url:
-                        script_images.add(clean_url)
-        
-        if script_images:
-            all_images.update(script_images)
-            log(f"Found {len(script_images)} additional images in script tags")
-        
-        # Convert back to list and filter out None values
-        images = [img for img in all_images if img]
-        
-        # Log the total number of images found
-        log(f"Total images found: {len(images)}")
-        
-        # If still no images, use sample images
-        if not images:
-            if product_name and ('cup' in product_name.lower() or 'mug' in product_name.lower() or '杯' in product_name):
-                images = [
-                    "https://images.unsplash.com/photo-1577937927133-3beabd7e9140?w=600&q=80",
-                    "https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?w=600&q=80"
-                ]
-                log(f"Using sample cup/mug product images")
-            elif product_name and ('bottle' in product_name.lower() or '瓶' in product_name):
-                images = [
-                    "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&q=80",
-                    "https://images.unsplash.com/photo-1546558073-4f6a92a65d86?w=600&q=80"
-                ]
-                log(f"Using sample bottle product images")
-            else:
-                images = [
-                    "https://images.unsplash.com/photo-1607082349566-187342175e2f?w=600&q=80",
-                    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80"
-                ]
-                log(f"Using generic sample product images")
-        
-        # Generate SKU
-        sku = f"1688-{datetime.now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:6]}"
-        
-        # Return the extracted information
+        if not price:
+            price = '0'
+            log("No price found, using fallback 0.")
+
+        # --- Product Attributes ---
+        attributes = {}
+        attr_table = soup.select_one('#productAttributes table')
+        if attr_table:
+            for row in attr_table.select('tr'):
+                ths = row.select('th')
+                tds = row.select('td')
+                for th, td in zip(ths, tds):
+                    key = th.get_text(strip=True)
+                    value = td.get_text(strip=True)
+                    attributes[key] = value
+            log(f"Extracted {len(attributes)} product attributes.")
+
+        # Return all extracted info
         return {
-            "name": product_name,
-            "price": price if price else "¥0.00",
-            "description": description,
-            "url": url,
-            "images": images[:5] if images else [],
-            "sku": sku
+            'name': product_name,
+            'description': description_html,
+            'price': price,
+            'images': images,
+            'attributes': attributes,
+            'url': url
         }
-    
     except Exception as e:
         log(f"Error extracting product info: {str(e)}", "ERROR")
-        return {
-            "name": None,
-            "price": None,
-            "description": None,
-            "url": url,
-            "images": [
-                "https://cdn.pixabay.com/photo/2016/01/27/22/10/shopping-1165437_1280.jpg",
-                "https://cdn.pixabay.com/photo/2019/04/26/07/79/store-4156934_1280.jpg"
-            ],
-            "sku": f"1688-{datetime.now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:6]}"
-        }
+        return None
 
 def clean_description(description):
     """Clean unwanted text from product descriptions while preserving the full content"""
@@ -889,10 +790,10 @@ def process_product_for_woocommerce(product_info, html_content, url):
         woo_product = WooCommerceProduct()
         
         # Extract basic product information
-        name = product_info.get('name', '').strip()
-        description = product_info.get('description', '').strip()
-        category = product_info.get('category', '').strip()
-        price = product_info.get('price', '0').strip()
+        name = (product_info.get('name') or '').strip()
+        description = (product_info.get('description') or '').strip()
+        category = (product_info.get('category') or '').strip()
+        price = (product_info.get('price') or '0').strip()
         images = [img for img in product_info.get('images', []) if img and isinstance(img, str)]
         
         # Debug: Log the raw description
