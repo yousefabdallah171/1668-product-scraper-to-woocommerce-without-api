@@ -527,7 +527,7 @@ def fetch_page_with_cloudscraper(url):
         log(f"Error fetching page: {str(e)}", "ERROR")
         return None
 
-def extract_product_info(html_content, url):
+def extract_product_info(html_content, url, scraping_delay=2):
     """Extract product information from HTML content"""
     try:
         log("Extracting product info from HTML content...")
@@ -622,7 +622,7 @@ def extract_product_info(html_content, url):
                             log(f"detailUrl fetch attempt {attempt+1} failed: status {resp.status_code}")
                     except Exception as e:
                         log(f"Failed to fetch detailUrl (attempt {attempt+1}): {e}", "WARNING")
-                    time.sleep(2)
+                    time.sleep(scraping_delay)
         # 3. Fallback: largest visible HTML/text block
         if not description_html:
             candidates = soup.find_all(['div', 'section'], recursive=True)
@@ -1049,7 +1049,7 @@ def cleanup_old_data():
     except Exception as e:
         log(f"Error in cleanup_old_data: {str(e)}", "ERROR")
 
-def main():
+def main(scraping_delay=2):
     """Main function to run the WooCommerce 1688 scraper"""
     try:
         log("Starting WooCommerce 1688 Scraper...")
@@ -1081,7 +1081,7 @@ def main():
                 f.write(html_content)
                 
             # Extract product info
-            product_info = extract_product_info(html_content, current_url)
+            product_info = extract_product_info(html_content, current_url, scraping_delay=scraping_delay)
             if not product_info:
                 log(f"Failed to extract product info from: {current_url}", "ERROR")
                 continue
@@ -1129,7 +1129,7 @@ def main():
     except Exception as e:
         log(f"Error in main: {str(e)}", "ERROR")
 
-def run():
+def run(scraping_delay=2):
     """Entry point for the script"""
     print("\n=== Starting script execution ===")
     print(f"Python version: {sys.version}")
@@ -1145,7 +1145,7 @@ def run():
     
     try:
         print("\n=== Starting main function ===")
-        main()
+        main(scraping_delay=scraping_delay)
         print("\n=== Main function completed successfully ===")
         return 0
     except Exception as e:
@@ -1156,5 +1156,9 @@ def run():
 if __name__ == "__main__":
     import sys
     import os
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--scraping_delay', type=int, default=2, help='Delay between requests in seconds')
+    args = parser.parse_args()
     print("Script started...")
-    sys.exit(run())
+    sys.exit(run(scraping_delay=args.scraping_delay))

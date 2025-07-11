@@ -39,6 +39,7 @@ class ProfessionalScraperGUI:
         self.settings = self.load_settings()
         self.scraped_products = []
         self.current_product_index = 0
+        self.scraping_delay = int(self.settings.get('scraping_delay', 2))
         
         # Load translations
         with open('lang.json', 'r', encoding='utf-8') as f:
@@ -797,6 +798,12 @@ https://detail.1688.com/offer/987654321.html"""
         
         os.makedirs(output_dir, exist_ok=True)
         
+        # Get scraping delay from GUI
+        try:
+            self.scraping_delay = int(self.delay_var.get())
+        except Exception:
+            self.scraping_delay = 2
+        
         # Start scraping in a separate thread
         self.is_running = True
         self.run_button.config(state='disabled')
@@ -808,20 +815,25 @@ https://detail.1688.com/offer/987654321.html"""
         self.progress_text.config(text="Starting scraper...")
         self.progress_percent.config(text="0%")
         
-        # Start the scraper thread
-        self.scraper_thread = threading.Thread(target=self._run_scraper_thread)
-        self.scraper_thread.daemon = True
-        self.scraper_thread.start()
+        # Start the scraper thread and pass the delay
+        threading.Thread(target=self._run_scraper_thread, args=(self.scraping_delay,), daemon=True).start()
 
-    def _run_scraper_thread(self):
+    def _run_scraper_thread(self, scraping_delay=2):
         """Run the scraper in a separate thread"""
         try:
             self.log_message("🚀 Starting Professional 1688 Product Scraper...")
             self.log_message("📋 URLs loaded and saved")
             
+            # In _run_scraper_thread, call the main scraping logic with scraping_delay=self.scraping_delay
+            # Example if using subprocess:
+            # subprocess.run([sys.executable, 'woocommerce_1688_scraper.py', '--scraping_delay', str(scraping_delay)])
+            # Or if using import:
+            # from woocommerce_1688_scraper import main
+            # main(scraping_delay=scraping_delay)
+            
             # Run the scraper
             process = subprocess.Popen(
-                [sys.executable, 'run_scraper.py'],
+                [sys.executable, 'woocommerce_1688_scraper.py', '--scraping_delay', str(scraping_delay)],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
