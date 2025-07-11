@@ -69,7 +69,12 @@ class ProfessionalScraperGUI:
         
         # Check for updates
         self.check_for_updates()
-        self.update_language()  # Set initial language
+        
+        # Initialize language system
+        self.initialize_language_system()
+        
+        # Update language after everything is set up
+        self.update_language()
 
     def setup_styling(self):
         """Setup modern styling for the GUI"""
@@ -233,19 +238,42 @@ class ProfessionalScraperGUI:
         help_btn.pack(side=tk.LEFT)
         self.translatable_widgets['help'] = help_btn
         
-        # Language selector - dynamically load available languages
+        # Test button for dropdown
+        test_btn = ttk.Button(button_frame, 
+            text="🧪 Test Dropdown", 
+            command=self.test_dropdown, 
+            style='Secondary.TButton'
+        )
+        test_btn.pack(side=tk.LEFT, padx=(10, 0))
+        
+        # Language selector - improved implementation
         ttk.Label(button_frame, text="Language:", style='Info.TLabel').pack(side=tk.LEFT, padx=(20, 5))
         self.language_var = tk.StringVar(value=self.current_language)
         
-        # Get available languages from translations
+        # Get available languages from translations and ensure they're properly formatted
         available_languages = list(self.translations.keys())
-        language_combo = ttk.Combobox(button_frame, textvariable=self.language_var,
-                                     values=available_languages, state="readonly", width=10)
-        language_combo.pack(side=tk.LEFT, padx=(0, 10))
-        language_combo.bind('<<ComboboxSelected>>', self.change_language)
+        self.log_message(f"Available languages: {available_languages}")
         
-        # Store the combobox reference for potential updates
-        self.language_combo = language_combo
+        # Create combobox with better configuration
+        self.language_combo = ttk.Combobox(
+            button_frame, 
+            textvariable=self.language_var,
+            values=available_languages, 
+            state="readonly", 
+            width=12,
+            height=len(available_languages)
+        )
+        self.language_combo.pack(side=tk.LEFT, padx=(0, 10))
+        
+        # Bind multiple events to ensure the dropdown works
+        self.language_combo.bind('<<ComboboxSelected>>', self.change_language)
+        self.language_combo.bind('<Button-1>', self.on_language_click)
+        self.language_combo.bind('<Key>', self.on_language_key)
+        
+        # Set initial value
+        if available_languages:
+            self.language_combo.set(available_languages[0])
+            self.current_language = available_languages[0]
 
     def create_progress_section(self, parent):
         """Create the progress tracking section"""
@@ -352,9 +380,18 @@ class ProfessionalScraperGUI:
         
         ttk.Label(output_lang_frame, text="Output Language:", style='Info.TLabel').pack(side=tk.LEFT)
         self.output_lang_var = tk.StringVar(value=self.settings.get('output_language', 'English'))
-        output_lang_combo = ttk.Combobox(output_lang_frame, textvariable=self.output_lang_var, 
-                                        values=list(self.translations.keys()), width=15)
-        output_lang_combo.pack(side=tk.LEFT, padx=(10, 0))
+        
+        # Get available languages
+        available_languages = list(self.translations.keys())
+        self.output_lang_combo = ttk.Combobox(
+            output_lang_frame, 
+            textvariable=self.output_lang_var, 
+            values=available_languages, 
+            state="readonly",
+            width=15,
+            height=len(available_languages)
+        )
+        self.output_lang_combo.pack(side=tk.LEFT, padx=(10, 0))
         
         # Translation language
         trans_lang_frame = ttk.Frame(trans_frame)
@@ -362,9 +399,15 @@ class ProfessionalScraperGUI:
         
         ttk.Label(trans_lang_frame, text="Translation Language:", style='Info.TLabel').pack(side=tk.LEFT)
         self.trans_lang_var = tk.StringVar(value=self.settings.get('translation_language', 'English'))
-        trans_lang_combo = ttk.Combobox(trans_lang_frame, textvariable=self.trans_lang_var, 
-                                       values=list(self.translations.keys()), width=15)
-        trans_lang_combo.pack(side=tk.LEFT, padx=(10, 0))
+        self.trans_lang_combo = ttk.Combobox(
+            trans_lang_frame, 
+            textvariable=self.trans_lang_var, 
+            values=available_languages, 
+            state="readonly",
+            width=15,
+            height=len(available_languages)
+        )
+        self.trans_lang_combo.pack(side=tk.LEFT, padx=(10, 0))
         
         # Translation options
         options_frame = ttk.Frame(trans_frame)
@@ -640,6 +683,52 @@ class ProfessionalScraperGUI:
                 self.log_message(f"Warning: Language '{new_language}' not found in translations")
         except Exception as e:
             self.log_message(f"Error changing language: {e}")
+
+    def on_language_click(self, event):
+        """Handle combobox click event"""
+        try:
+            self.log_message(f"Language dropdown clicked, current value: {self.language_var.get()}")
+            # Force the dropdown to open
+            self.language_combo.event_generate('<Down>')
+        except Exception as e:
+            self.log_message(f"Error in language click: {e}")
+
+    def on_language_key(self, event):
+        """Handle combobox key event"""
+        try:
+            if event.keysym == 'Return' or event.keysym == 'KP_Enter':
+                self.language_combo.event_generate('<<ComboboxSelected>>')
+            elif event.keysym == 'Down':
+                self.language_combo.event_generate('<Down>')
+        except Exception as e:
+            self.log_message(f"Error in language key event: {e}")
+
+    def test_dropdown(self):
+        """Test method to verify dropdown functionality"""
+        try:
+            available_languages = list(self.translations.keys())
+            self.log_message(f"Testing dropdown with languages: {available_languages}")
+            
+            # Test if combobox has values
+            if hasattr(self, 'language_combo'):
+                current_values = self.language_combo['values']
+                self.log_message(f"Combobox values: {current_values}")
+                
+                # Test if Arabic is in the list
+                if 'Arabic' in current_values:
+                    self.log_message("✅ Arabic found in dropdown")
+                else:
+                    self.log_message("❌ Arabic not found in dropdown")
+                    
+                # Test if dropdown can be opened
+                self.language_combo.focus_set()
+                self.language_combo.event_generate('<Down>')
+                self.log_message("✅ Dropdown test completed")
+            else:
+                self.log_message("❌ Language combobox not found")
+                
+        except Exception as e:
+            self.log_message(f"❌ Dropdown test error: {e}")
 
     def validate_urls(self):
         """Validate URLs in the text area"""
@@ -1038,6 +1127,79 @@ https://detail.1688.com/offer/987654321.html"""
         except Exception as e:
             self.log_message(f"❌ Error updating language: {e}")
             print(f"Language update error: {e}")
+
+    def initialize_language_system(self):
+        """Initialize the language system by ensuring Arabic is available."""
+        available_languages = list(self.translations.keys())
+        if 'Arabic' not in available_languages:
+            self.log_message("⚠️ Arabic language not found in lang.json. Adding it.")
+            # Add Arabic to the translations dictionary
+            self.translations['Arabic'] = {
+                'title': 'منصة التجميع المهني للمنتجات 1688 - جاهز لووكوميرس',
+                'subtitle': 'تكامل متقدم مع WooCommerce - لا يتطلب أي مفاتيح API',
+                'developer': 'تطوير بواسطة Rakmyat (https://rakmyat.com/) | تواصل: yoseabdallah866@gmail.com',
+                'urls_management': 'إدارة الروابط المنتجات',
+                'load_urls': 'تحميل الروابط',
+                'save_urls': 'حفظ الروابط',
+                'clear_all': 'مسح الكل',
+                'add_sample': 'إضافة عينة',
+                'validate_urls': 'تحقق من صحة الروابط',
+                'scraper_controls': 'إدارة التجميع',
+                'start_scraping': 'بدء التجميع',
+                'stop_scraping': 'إيقاف التجميع',
+                'open_output': 'فتح المجلد الإخراج',
+                'open_csv': 'فتح CSV',
+                'help': 'مساعدة',
+                'progress_tracking': 'تتبع التقدم',
+                'ready': 'جاهز للتجميع',
+                'scraping_progress': 'جاري التجميع...',
+                'stopping': 'يتم الإيقاف...',
+                'current_product': 'المنتج الحالي:',
+                'file_settings': 'إعدادات الملفات',
+                'input_file': 'ملف الإدخال',
+                'output_folder': 'مجلد الإخراج',
+                'browse_input': 'تصفح',
+                'browse_output': 'تصفح',
+                'translation_settings': 'إعدادات الترجمة',
+                'output_language': 'لغة الإخراج',
+                'translation_language': 'لغة الترجمة',
+                'auto_translate': 'تمكين الترجمة التلقائية',
+                'image_optimization': 'تمكين التحسين الصورة',
+                'scraping_speed': 'سرعة التجميع',
+                'scraping_delay': 'تأخير التجميع (ثواني):',
+                'url_limit': 'حد الروابط للتجميع:',
+                'output_settings': 'إعدادات الإخراج',
+                'timestamp_folders': 'إنشاء مجلدات مع تاريخ',
+                'backup_files': 'إنشاء ملفات إضافية',
+                'csv_prefix': 'اسم مسبق لملف CSV:',
+                'advanced_settings': 'إعدادات متقدمة',
+                'error_handling': 'معالجة الأخطاء',
+                'save_errors': 'حفظ سجلات الأخطاء',
+                'retry_failed': 'إعادة تجميع الروابط الفاشلة',
+                'update_checking': 'التحقق من التحديثات',
+                'check_updates': 'التحقق من التحديثات',
+                'csv_preview': 'معاينة نتائج CSV',
+                'refresh_preview': 'تحديث المعاينة',
+                'open_excel': 'فتح في Excel',
+                'open_log_folder': 'فتح مجلد السجلات',
+                'clear_logs': 'مسح السجلات',
+                'save_logs': 'حفظ السجلات',
+                'image_preview': 'معاينة صورة المنتج',
+                'previous_image': 'صورة سابقة',
+                'next_image': 'صورة لاحقة',
+                'image_index': 'صورة {current} من {total}',
+                'no_images_available': 'لا توجد صور متاحة',
+                'error_loading_image': 'خطأ في تحميل الصورة: {error}',
+                'product_name': 'اسم المنتج',
+                'sku': 'الكود SKU',
+                'price': 'السعر',
+                'categories': 'التصنيفات',
+                'images': 'الصور'
+            }
+            # Save updated translations to lang.json
+            with open('lang.json', 'w', encoding='utf-8') as f:
+                json.dump(self.translations, f, indent=2)
+            self.log_message("✅ Arabic language added to lang.json")
 
 def main():
     """Main function to run the professional GUI"""
