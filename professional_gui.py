@@ -201,52 +201,31 @@ class ProfessionalScraperGUI:
         
         # Control buttons
         button_frame = ttk.Frame(control_frame)
-        button_frame.pack(fill=tk.X)
+        button_frame.pack(fill=tk.X, pady=(0, 10))
         
-        # Start Scraping Button (Primary)
-        self.run_button = ttk.Button(
-            button_frame, 
-            text="▶️ Start Scraping", 
-            command=self.run_scraper, 
-            style='Primary.TButton'
-        )
+        # Start/Stop buttons
+        self.run_button = ttk.Button(button_frame, text="🚀 Start Scraping", 
+                                    command=self.run_scraper, style='Primary.TButton')
         self.run_button.pack(side=tk.LEFT, padx=(0, 10))
         self.translatable_widgets['start_scraping'] = self.run_button
         
-        # Stop Scraping Button
-        self.stop_button = ttk.Button(
-            button_frame, 
-            text="⏹️ Stop Scraping", 
-            command=self.stop_scraper, 
-            style='Danger.TButton', 
-            state='disabled'
-        )
+        self.stop_button = ttk.Button(button_frame, text="⏹️ Stop Scraping", 
+                                     command=self.stop_scraper, style='Danger.TButton', state='disabled')
         self.stop_button.pack(side=tk.LEFT, padx=(0, 10))
         self.translatable_widgets['stop_scraping'] = self.stop_button
         
-        # Open Output Folder Button
-        output_btn = ttk.Button(
-            button_frame, 
-            text="📂 Open Output", 
-            command=self.open_output_folder, 
-            style='Secondary.TButton'
-        )
+        # Output buttons
+        output_btn = ttk.Button(button_frame, text="📁 Open Output", 
+                               command=self.open_output_folder, style='Secondary.TButton')
         output_btn.pack(side=tk.LEFT, padx=(0, 10))
         self.translatable_widgets['open_output'] = output_btn
         
-        # Open CSV Button
-        csv_btn = ttk.Button(
-            button_frame, 
-            text="📊 Open CSV", 
-            command=self.open_csv_file, 
-            style='Secondary.TButton'
-        )
+        csv_btn = ttk.Button(button_frame, text="📊 Open CSV", 
+                            command=self.open_csv_file, style='Secondary.TButton')
         csv_btn.pack(side=tk.LEFT, padx=(0, 10))
         self.translatable_widgets['open_csv'] = csv_btn
         
-        # Help Button
-        help_btn = ttk.Button(
-            button_frame, 
+        help_btn = ttk.Button(button_frame, 
             text="❓ Help", 
             command=lambda: self.notebook.select(3), 
             style='Secondary.TButton'
@@ -254,13 +233,19 @@ class ProfessionalScraperGUI:
         help_btn.pack(side=tk.LEFT)
         self.translatable_widgets['help'] = help_btn
         
-        # Language selector
+        # Language selector - dynamically load available languages
         ttk.Label(button_frame, text="Language:", style='Info.TLabel').pack(side=tk.LEFT, padx=(20, 5))
         self.language_var = tk.StringVar(value=self.current_language)
+        
+        # Get available languages from translations
+        available_languages = list(self.translations.keys())
         language_combo = ttk.Combobox(button_frame, textvariable=self.language_var,
-                                     values=["English", "Arabic"], state="readonly", width=10)
+                                     values=available_languages, state="readonly", width=10)
         language_combo.pack(side=tk.LEFT, padx=(0, 10))
         language_combo.bind('<<ComboboxSelected>>', self.change_language)
+        
+        # Store the combobox reference for potential updates
+        self.language_combo = language_combo
 
     def create_progress_section(self, parent):
         """Create the progress tracking section"""
@@ -368,7 +353,7 @@ class ProfessionalScraperGUI:
         ttk.Label(output_lang_frame, text="Output Language:", style='Info.TLabel').pack(side=tk.LEFT)
         self.output_lang_var = tk.StringVar(value=self.settings.get('output_language', 'English'))
         output_lang_combo = ttk.Combobox(output_lang_frame, textvariable=self.output_lang_var, 
-                                        values=["English", "Arabic", "French", "Spanish"], width=15)
+                                        values=list(self.translations.keys()), width=15)
         output_lang_combo.pack(side=tk.LEFT, padx=(10, 0))
         
         # Translation language
@@ -378,7 +363,7 @@ class ProfessionalScraperGUI:
         ttk.Label(trans_lang_frame, text="Translation Language:", style='Info.TLabel').pack(side=tk.LEFT)
         self.trans_lang_var = tk.StringVar(value=self.settings.get('translation_language', 'English'))
         trans_lang_combo = ttk.Combobox(trans_lang_frame, textvariable=self.trans_lang_var, 
-                                       values=["English", "Arabic", "French", "Spanish", "German", "Italian"], width=15)
+                                       values=list(self.translations.keys()), width=15)
         trans_lang_combo.pack(side=tk.LEFT, padx=(10, 0))
         
         # Translation options
@@ -645,9 +630,16 @@ class ProfessionalScraperGUI:
 
     def change_language(self, event=None):
         """Change GUI language"""
-        self.current_language = self.language_var.get()
-        self.log_message(f"Language changed to: {self.current_language}")
-        self.update_language()
+        try:
+            new_language = self.language_var.get()
+            if new_language in self.translations:
+                self.current_language = new_language
+                self.log_message(f"Language changed to: {self.current_language}")
+                self.update_language()
+            else:
+                self.log_message(f"Warning: Language '{new_language}' not found in translations")
+        except Exception as e:
+            self.log_message(f"Error changing language: {e}")
 
     def validate_urls(self):
         """Validate URLs in the text area"""
@@ -974,61 +966,78 @@ https://detail.1688.com/offer/987654321.html"""
 
     def update_language(self):
         """Comprehensive language update for all GUI elements"""
-        lang = self.current_language
-        t = self.translations[lang]
-        
-        # Update tab titles
-        self.notebook.tab(0, text=t['preview'])
-        self.notebook.tab(1, text=t['settings'])
-        self.notebook.tab(2, text=t['csv_preview'])
-        self.notebook.tab(3, text=t['help'])
-        
-        # Update all stored widget references
-        for widget_name, widget in self.translatable_widgets.items():
-            if widget_name in t:
-                try:
-                    if isinstance(widget, ttk.Button):
-                        widget.config(text=t[widget_name])
-                    elif isinstance(widget, ttk.Label):
-                        widget.config(text=t[widget_name])
-                    elif isinstance(widget, ttk.LabelFrame):
-                        widget.config(text=t[widget_name])
-                    elif isinstance(widget, tk.Label):
-                        widget.config(text=t[widget_name])
-                except Exception as e:
-                    print(f"Error updating widget {widget_name}: {e}")
-        
-        # Update specific widgets that might not be in the stored references
         try:
-            if hasattr(self, 'run_button'):
-                self.run_button.config(text=t['start_scraping'])
-            if hasattr(self, 'stop_button'):
-                self.stop_button.config(text=t['stop_scraping'])
-            if hasattr(self, 'status_label'):
-                current_status = self.status_label.cget('text')
-                if 'Ready' in current_status:
-                    self.status_label.config(text=t['ready'])
-                elif 'Scraping' in current_status:
-                    self.status_label.config(text=t['scraping_progress'])
-                elif 'Stopping' in current_status:
-                    self.status_label.config(text=t['stopping'])
+            lang = self.current_language
+            if lang not in self.translations:
+                self.log_message(f"Warning: Language '{lang}' not available, using English")
+                lang = "English"
+                self.current_language = "English"
+                if hasattr(self, 'language_var'):
+                    self.language_var.set("English")
+            
+            t = self.translations[lang]
+            
+            # Update tab titles
+            try:
+                self.notebook.tab(0, text="🚀 Main Scraper")
+                self.notebook.tab(1, text="⚙️ Settings")
+                self.notebook.tab(2, text="📊 Results Preview")
+                self.notebook.tab(3, text="❓ Help")
+            except Exception as e:
+                print(f"Error updating tab titles: {e}")
+            
+            # Update all stored widget references
+            for widget_name, widget in self.translatable_widgets.items():
+                if widget_name in t:
+                    try:
+                        if isinstance(widget, ttk.Button):
+                            widget.config(text=t[widget_name])
+                        elif isinstance(widget, ttk.Label):
+                            widget.config(text=t[widget_name])
+                        elif isinstance(widget, ttk.LabelFrame):
+                            widget.config(text=t[widget_name])
+                        elif isinstance(widget, tk.Label):
+                            widget.config(text=t[widget_name])
+                    except Exception as e:
+                        print(f"Error updating widget {widget_name}: {e}")
+            
+            # Update specific widgets that might not be in the stored references
+            try:
+                if hasattr(self, 'run_button'):
+                    self.run_button.config(text=t['start_scraping'])
+                if hasattr(self, 'stop_button'):
+                    self.stop_button.config(text=t['stop_scraping'])
+                if hasattr(self, 'status_label'):
+                    current_status = self.status_label.cget('text')
+                    if 'Ready' in current_status:
+                        self.status_label.config(text=t['ready'])
+                    elif 'Scraping' in current_status:
+                        self.status_label.config(text=t['scraping_progress'])
+                    elif 'Stopping' in current_status:
+                        self.status_label.config(text=t['stopping'])
+            except Exception as e:
+                print(f"Error updating specific widgets: {e}")
+            
+            # Right-to-left support for Arabic
+            if lang == 'Arabic':
+                self.root.tk.call('tk', 'scaling', 1.2)
+                self.root.option_add('*font', 'Segoe UI 11')
+                self.root.option_add('*justify', 'right')
+                # Set text direction for text widgets
+                if hasattr(self, 'url_text'):
+                    self.url_text.config(wrap=tk.WORD)
+            else:
+                self.root.tk.call('tk', 'scaling', 1.0)
+                self.root.option_add('*font', 'Segoe UI 10')
+                self.root.option_add('*justify', 'left')
+                if hasattr(self, 'url_text'):
+                    self.url_text.config(wrap=tk.CHAR)
+                    
+            self.log_message(f"✅ Language updated to: {lang}")
+            
         except Exception as e:
-            print(f"Error updating specific widgets: {e}")
-        
-        # Right-to-left support for Arabic
-        if lang == 'Arabic':
-            self.root.tk.call('tk', 'scaling', 1.2)
-            self.root.option_add('*font', 'Segoe UI 11')
-            self.root.option_add('*justify', 'right')
-            # Set text direction for text widgets
-            if hasattr(self, 'url_text'):
-                self.url_text.config(wrap=tk.WORD)
-        else:
-            self.root.tk.call('tk', 'scaling', 1.0)
-            self.root.option_add('*font', 'Segoe UI 10')
-            self.root.option_add('*justify', 'left')
-            if hasattr(self, 'url_text'):
-                self.url_text.config(wrap=tk.CHAR)
+            self.log_message(f"❌ Error updating language: {e}")
+            print(f"Language update error: {e}")
 
 def main():
     """Main function to run the professional GUI"""
