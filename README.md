@@ -6,7 +6,24 @@ A powerful, intelligent tool to scrape product data from 1688.com and prepare it
 
 ## 🖼️ Workflow Diagram
 
-![Workflow Diagram](images/workflow.png)
+```mermaid
+sequenceDiagram
+    participant User as "👤 User"
+    participant Launcher as "🚀 Smart Launcher"
+    participant GUI as "🖥️ Professional GUI"
+    participant Scraper as "🤖 Scraper Engine"
+    participant Output as "📦 Output/CSV"
+    User->>Launcher: Double-click to start
+    Launcher->>Launcher: Check Python, files, dependencies
+    Launcher->>GUI: Launch GUI
+    GUI->>GUI: User configures settings, adds URLs
+    GUI->>Scraper: Start scraping
+    Scraper->>Scraper: Fetch & parse product pages
+    Scraper->>Scraper: Extract info, download images
+    Scraper->>Output: Save CSV, images, logs
+    Output->>GUI: Show live preview & progress
+    GUI->>User: User opens output, imports to WooCommerce
+```
 
 ---
 
