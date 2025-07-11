@@ -1,6 +1,7 @@
 # 🛍️ Professional 1688 Product Scraper for WooCommerce
 
-A powerful, feature-rich desktop application that scrapes product data from 1688.com and exports it into WooCommerce-compatible CSV files. **100% FREE** - No API keys, subscriptions, or payments required.
+A powerful, feature-rich desktop application that scrapes product data from 1688.com and exports it into WooCommerce-compatible CSV files.  
+**100% FREE** – No API keys, subscriptions, or payments required.
 
 ---
 
@@ -8,22 +9,46 @@ A powerful, feature-rich desktop application that scrapes product data from 1688
 - **Critical IndentationError fixed** in core scraper logic
 - **Full code health check**: syntax, logic, and runtime issues addressed
 - **Professional GUI only**: Basic GUI removed for a streamlined experience
+- **Visual workflow and documentation improvements**
 - **Actively maintained**: Please report any issues or feature requests on [GitHub](https://github.com/yousefabdallah171/1668-product-scraper-to-woocommerce-without-api)
 
 ---
 
 # 🌟 Why Use This Tool?
-
 - **No API keys, no subscriptions, no limits!**
 - **Professional GUI**: Easy to use, powerful, and supports English & Arabic
 - **WooCommerce-ready output**: Import products instantly
 - **Advanced error handling and logging**
 - **Live previews and analytics**
 - **Organized output and backups**
+- **Multi-language support**
+- **Robust, production-grade codebase**
+
+---
+
+# 🔄 How the Script Works (Workflow)
+
+```mermaid
+sequenceDiagram
+    participant User as 👤 User
+    participant GUI as 🖥️ Professional GUI
+    participant Scraper as 🤖 Scraper Engine
+    participant Output as 📦 Output/CSV
+    User->>GUI: Open GUI, enter 1688 URLs
+    GUI->>GUI: User configures settings
+    GUI->>Scraper: Start scraping
+    Scraper->>Scraper: Fetch & parse product pages
+    Scraper->>Scraper: Extract info, download images
+    Scraper->>Output: Save CSV, images, logs
+    Output->>GUI: Show live preview & progress
+    GUI->>User: User opens output, imports to WooCommerce
+```
 
 ---
 
 # 🖼️ Visual Showcase
+
+> **Tip:** Add your real screenshots to an `images/` folder and update the links below.
 
 ## Professional GUI (Main Window)
 ![Professional GUI Main Window](images/professional_gui_main.png)
@@ -47,22 +72,50 @@ A powerful, feature-rich desktop application that scrapes product data from 1688
 
 ---
 
-# 🔄 How the Script Works (Workflow)
+# ✨ Features
 
-```mermaid
-graph TD;
-    A[User provides 1688.com URLs] --> B[Professional GUI loads URLs]
-    B --> C[User configures settings (language, output, etc.)]
-    C --> D[Start Scraping]
-    D --> E[Script fetches product pages]
-    E --> F[Extract product name, description, images, price, attributes]
-    F --> G[Translate content (if enabled)]
-    G --> H[Save images and data to output folder]
-    H --> I[Generate WooCommerce CSV]
-    I --> J[Show live preview in GUI]
-    J --> K[User opens output folder or imports CSV to WooCommerce]
-    D --> L[Show progress, logs, and errors in real time]
-```
+## 🎛️ Advanced Settings Panel
+- **File Management**: Select input file, choose output folder
+- **Language Options**: Output language (Arabic/English), translation language selection
+- **Scraping Controls**: Enable/disable automatic translation, image optimization
+- **Performance Settings**: Control scraping speed/delay, limit number of URLs
+- **Output Organization**: Timestamped folders, backup files, custom CSV prefixes
+
+## 🖥️ Professional Scraper Controls
+- **Start/Stop Buttons**: Safe scraper termination
+- **Real-time Monitoring**: Live progress tracking and status updates
+- **Output Management**: Open output folder, CSV files, log folders
+- **Help System**: Comprehensive instructions and troubleshooting
+
+## 🔗 Advanced URL Management
+- **URL Editor**: Paste/edit URLs in text area
+- **File Operations**: Load/save URLs from/to files
+- **Validation**: URL validation and error checking
+- **Sample Data**: Add test URLs for quick setup
+
+## 📊 Progress Tracking & Analytics
+- **Progress Bar**: Real-time percentage completion
+- **Statistics**: Scraped vs. total URLs counter
+- **Live Updates**: Current product being processed
+- **Performance Metrics**: Success/failure rates
+
+## 🧾 Live Results Preview
+- **CSV Preview**: Display scraped results in read-only table
+- **Excel Integration**: Open CSV files directly in Excel
+- **Image Preview**: Live product image thumbnails
+- **Data Export**: Multiple output formats
+
+## 🌐 Multi-language Support
+- **English Interface**: Full English GUI
+- **Arabic Interface**: Complete Arabic translation
+- **Dynamic Language Switching**: Change interface language on-the-fly
+- **Localized Messages**: All user messages translated
+
+## 📤 Advanced Output Features
+- **WooCommerce Ready**: Perfect CSV format for WooCommerce import
+- **Multiple Formats**: CSV, JSON backup, detailed logs
+- **Organized Output**: Timestamped folders, backup files
+- **Error Handling**: Comprehensive error logging and recovery
 
 ---
 
@@ -215,7 +268,7 @@ Product Name,Full description...,Short desc...,SKU123,29.99,Category1,image1.jpg
 
 ---
 
-# 🚨 Troubleshooting
+# 🚨 Troubleshooting & FAQ
 
 ### Common Issues
 
@@ -248,8 +301,8 @@ Product Name,Full description...,Short desc...,SKU123,29.99,Category1,image1.jpg
 # 🔄 Updates
 
 ### Version History
-- **v2.1**: Visual workflow, changelog, and documentation improvements
-- **v2.0**: Professional GUI with advanced features
+- **v2.1** (2025-07-11): Visual workflow, changelog, and documentation improvements
+- **v2.0** (2025-07-10): Professional GUI with advanced features
 - **v1.5**: Enhanced scraper with better error handling
 - **v1.0**: Basic GUI and core functionality
 
@@ -291,3 +344,9 @@ Product Name,Full description...,Short desc...,SKU123,29.99,Category1,image1.jpg
 2. Review error logs for specific issues
 3. Contact developer with detailed error information
 4. Check GitHub issues for known problems
+
+---
+
+**Enjoy your free, professional 1688 product scraper!**
+
+*Developed with ❤️ by Rakmyat for the WooCommerce community*
