@@ -1149,8 +1149,8 @@ def run():
         print("\n=== Main function completed successfully ===")
         return 0
     except Exception as e:
-        print(f"\n❌ Unhandled exception in main function: {str(e)}")
-        log(f"\n❌ Unhandled exception: {str(e)}", "ERROR")
+        print(f"\nERROR: Unhandled exception in main function: {str(e)}")
+        log(f"\nERROR: Unhandled exception: {str(e)}", "ERROR")
         return 1
 
 if __name__ == "__main__":

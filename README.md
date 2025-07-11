@@ -1,628 +1,266 @@
-# 🛍️ 1688.com Product Scraper for WooCommerce
+# 🛍️ Professional 1688 Product Scraper for WooCommerce
 
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Active-brightgreen.svg)](https://github.com/yousefabdallah171/1668-product-scraper-to-woocommerce-without-api)
-[![Free](https://img.shields.io/badge/Free-100%25-brightgreen.svg)](https://github.com/yousefabdallah171/1668-product-scraper-to-woocommerce-without-api)
-[![WooCommerce](https://img.shields.io/badge/WooCommerce-Ready-brightgreen.svg)](https://woocommerce.com)
-
-> **A powerful, intelligent tool to scrape product data from 1688.com and prepare it for WooCommerce import with advanced features and robust error handling.**
-
-## 🏢 **Developed by [Rakmyat](https://rakmyat.com/)**
-
-**📧 Contact for Freelance Work:** [yoseabdallah866@gmail.com](mailto:yoseabdallah866@gmail.com)
-
----
-
-## 🆓 **100% FREE - NO SUBSCRIPTIONS, NO API KEYS, NO PAYMENTS**
-
-### ✅ **What's Included (Completely Free)**
-- 🚫 **No API Keys Required** - Works directly with 1688.com
-- 🚫 **No Third-Party Services** - Everything runs locally on your computer
-- 🚫 **No Subscriptions** - One-time download, use forever
-- 🚫 **No Payments** - 100% free, no hidden costs
-- 🚫 **No Registration** - No accounts or sign-ups needed
-- 🚫 **No Limits** - Process as many products as you want
-- 🚫 **No Watermarks** - Clean, professional output
-- 🚫 **No Ads** - No advertising or tracking
-
-### 💰 **Cost Breakdown**
-```
-Total Cost: $0.00
-├── Software: FREE
-├── API Keys: NOT NEEDED
-├── Subscriptions: NOT REQUIRED
-├── Third-party Services: NOT USED
-└── Future Updates: FREE
-```
-
-### 🎯 **WooCommerce Ready Output**
-- ✅ **Direct Import** - CSV files are formatted exactly for WooCommerce import
-- ✅ **Proper Headers** - All required WooCommerce fields included
-- ✅ **Image URLs** - Direct links to product images (no local storage needed)
-- ✅ **HTML Descriptions** - Rich formatting preserved for better product pages
-- ✅ **Categories** - Proper category mapping for WooCommerce
-- ✅ **Pricing** - Correct price formatting for WooCommerce
-- ✅ **SKU Generation** - Automatic SKU creation for inventory management
-
----
-
-## 📋 Table of Contents
-
-- [✨ Features](#-features)
-- [🚀 Quick Start](#-quick-start)
-- [📦 Installation](#-installation)
-- [🛠️ Usage Guide](#️-usage-guide)
-- [📊 Output Examples](#-output-examples)
-- [🔧 Configuration](#-configuration)
-- [❓ Troubleshooting](#-troubleshooting)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
-
----
+A powerful, feature-rich desktop application that scrapes product data from 1688.com and exports it into WooCommerce-compatible CSV files. **100% FREE** - No API keys, subscriptions, or payments required.
 
 ## ✨ Features
 
-### 🎯 **Core Features**
-- ✅ **Intelligent Product Extraction** - Automatically detects and extracts product names, descriptions, prices, and images
-- ✅ **Multi-Selector Support** - Uses multiple CSS selectors to ensure maximum data extraction success
-- ✅ **Robust Error Handling** - Continues processing even if some products fail
-- ✅ **Automatic Translation** - Translates Chinese content to English for WooCommerce compatibility
-- ✅ **Image Optimization** - Filters and validates product images, removes duplicates and non-product images
-- ✅ **CSV Export** - Generates WooCommerce-compatible CSV files with proper formatting
+### 🎛️ Advanced Settings Panel
+- **File Management**: Select input file, choose output folder
+- **Language Options**: Output language (Arabic/English), translation language selection
+- **Scraping Controls**: Enable/disable automatic translation, image optimization
+- **Performance Settings**: Control scraping speed/delay, limit number of URLs
+- **Output Organization**: Timestamped folders, backup files, custom CSV prefixes
 
-### 🔧 **Advanced Features**
-- 🔄 **Retry Logic** - Automatically retries failed requests with exponential backoff
-- 📝 **Detailed Logging** - Comprehensive logging for debugging and monitoring
-- 🎨 **Rich Description Support** - Extracts full HTML descriptions with formatting preserved
-- 🖼️ **Image Gallery Support** - Captures all product images, not just the main one
-- ⚡ **Performance Optimized** - Efficient processing with configurable delays to avoid rate limiting
+### 🖥️ Professional Scraper Controls
+- **Start/Stop Buttons**: Safe scraper termination
+- **Real-time Monitoring**: Live progress tracking and status updates
+- **Output Management**: Open output folder, CSV files, log folders
+- **Help System**: Comprehensive instructions and troubleshooting
 
-### 📊 **Data Extraction Capabilities**
-```
-Product Information Extracted:
-├── Product Name (with fallbacks)
-├── Full Description (HTML + Text)
-├── Price (with currency detection)
-├── Product Images (filtered & validated)
-├── Category Information
-├── Product Attributes
-└── Seller Information
-```
+### 🔗 Advanced URL Management
+- **URL Editor**: Paste/edit URLs in text area
+- **File Operations**: Load/save URLs from/to files
+- **Validation**: URL validation and error checking
+- **Sample Data**: Add test URLs for quick setup
 
----
+### 📊 Progress Tracking & Analytics
+- **Progress Bar**: Real-time percentage completion
+- **Statistics**: Scraped vs. total URLs counter
+- **Live Updates**: Current product being processed
+- **Performance Metrics**: Success/failure rates
+
+### 🧾 Live Results Preview
+- **CSV Preview**: Display scraped results in read-only table
+- **Excel Integration**: Open CSV files directly in Excel
+- **Image Preview**: Live product image thumbnails
+- **Data Export**: Multiple output formats
+
+### 🌐 Multi-language Support
+- **English Interface**: Full English GUI
+- **Arabic Interface**: Complete Arabic translation
+- **Dynamic Language Switching**: Change interface language on-the-fly
+- **Localized Messages**: All user messages translated
+
+### 📤 Advanced Output Features
+- **WooCommerce Ready**: Perfect CSV format for WooCommerce import
+- **Multiple Formats**: CSV, JSON backup, detailed logs
+- **Organized Output**: Timestamped folders, backup files
+- **Error Handling**: Comprehensive error logging and recovery
 
 ## 🚀 Quick Start
 
-### **Step 1: Download & Setup**
+### Prerequisites
+   ```bash
+# Install required Python packages
+   pip install -r requirements.txt
+   ```
+
+### Running the Professional GUI
+   ```bash
+# Launch the professional GUI
+python professional_gui.py
+```
+
+### Running the Basic GUI
 ```bash
-# Clone the repository
-git clone https://github.com/yousefabdallah171/1668-product-scraper-to-woocommerce-without-api.git
-cd 1668-product-scraper-to-woocommerce-without-api
-
-# Install dependencies (all free)
-pip install -r requirements.txt
+# Launch the basic GUI
+python gui_launcher.py
 ```
 
-### **Step 2: Prepare Your URLs**
-Create a `urls.txt` file with your 1688.com product links:
-```txt
-https://detail.1688.com/offer/123456789.html
-https://detail.1688.com/offer/987654321.html
-https://detail.1688.com/offer/456789123.html
-```
-
-### **Step 3: Run the Scraper**
+### Command Line Usage
 ```bash
-# Windows
-python run_scraper.py
-
-# Or double-click
-run_scraper.bat
-```
-
-### **Step 4: Import to WooCommerce**
-1. Go to WooCommerce → Products → Import
-2. Upload the generated CSV file
-3. Map the fields and import!
-
----
-
-## 📦 Installation
-
-### **System Requirements**
-- ✅ Windows 10/11, macOS, or Linux
-- ✅ Python 3.8 or higher
-- ✅ Internet connection
-- ✅ Google Chrome (for debugging)
-
-### **Detailed Installation Steps**
-
-#### **1. Install Python (Free)**
-```bash
-# Download from python.org (FREE)
-# Make sure to check "Add Python to PATH" during installation
-
-# Verify installation
-python --version
-# Should show: Python 3.8.x or higher
-```
-
-#### **2. Install Dependencies (All Free)**
-```bash
-# Upgrade pip first
-pip install --upgrade pip
-
-# Install required packages (all free)
-pip install -r requirements.txt
-```
-
-#### **3. Verify Installation**
-```bash
-# Test the scraper
-python run_scraper.py --test
-```
-
----
-
-## 🛠️ Usage Guide
-
-### **Basic Usage**
-
-#### **1. Prepare Your Product URLs**
-```txt
-# urls.txt - One URL per line
-https://detail.1688.com/offer/123456789.html
-https://detail.1688.com/offer/987654321.html
-```
-
-#### **2. Run the Scraper**
-```bash
+# Run scraper directly
 python run_scraper.py
 ```
 
-#### **3. Check the Output**
+## 📋 Usage Instructions
+
+### 1. Setting Up URLs
+1. Open the Professional GUI
+2. Go to the "Main Scraper" tab
+3. Add 1688.com product URLs (one per line)
+4. Use "Validate URLs" to check for errors
+5. Save URLs to file for future use
+
+### 2. Configuring Settings
+1. Go to the "Settings" tab
+2. **File Settings**: Choose input file and output folder
+3. **Translation Settings**: Select output and translation languages
+4. **Scraping Settings**: Set delay and URL limits
+5. **Output Settings**: Configure file organization
+6. **Advanced Settings**: Error handling and update options
+7. Click "Save Settings"
+
+### 3. Running the Scraper
+1. Go to "Main Scraper" tab
+2. Click "Start Scraping"
+3. Monitor progress in real-time
+4. View logs for detailed information
+5. Check "Results Preview" tab for output
+
+### 4. Managing Results
+1. **CSV Preview**: View scraped data in table format
+2. **Image Preview**: Browse product images
+3. **Export Options**: Open in Excel, access output folders
+4. **Backup Files**: JSON backups for data recovery
+
+## 🛠️ Advanced Features
+
+### Multi-language Interface
+- Switch between English and Arabic
+- All interface elements translated
+- Dynamic language loading from `lang.json`
+
+### Progress Tracking
+- Real-time progress bar
+- Current product display
+- Success/failure statistics
+- Detailed logging system
+
+### Error Handling
+- Comprehensive error logging
+- Automatic retry for failed URLs
+- User-friendly error messages
+- Detailed error reports
+
+### Output Organization
 ```
-📁 Generated Files:
-├── woocommerce_import_YYYYMMDD_HHMMSS.csv  # Main CSV file
-├── raw_products_YYYYMMDD_HHMMSS.json       # Raw data backup
-└── scraper.log                             # Detailed logs
-```
-
-### **Advanced Usage**
-
-#### **Custom Configuration**
-```python
-# Edit woocommerce_1688_scraper.py
-# Modify these settings:
-
-DELAY_BETWEEN_REQUESTS = 3  # Seconds between requests
-MAX_RETRIES = 3             # Number of retry attempts
-TIMEOUT = 30                # Request timeout in seconds
-```
-
-#### **Batch Processing**
-```bash
-# Process multiple URL files
-python run_scraper.py --input urls_batch1.txt
-python run_scraper.py --input urls_batch2.txt
-```
-
----
-
-## 📊 Output Examples
-
-### **CSV Output Structure (WooCommerce Ready)**
-```csv
-Name,Description,Short Description,Regular Price,Images,Categories,Type,SKU
-"Product Name","Full description with HTML formatting...","Short description...","29.99","image1.jpg,image2.jpg","Electronics","simple","1688-123456"
-```
-
-### **Sample Extracted Data**
-```json
-{
-  "name": "Creative Romantic Starry Sky Light Projection",
-  "description": "<p>Beautiful LED projection light with multiple colors...</p>",
-  "price": "29.99",
-  "images": [
-    "https://img.alicdn.com/imgextra/i1/123456.jpg",
-    "https://img.alicdn.com/imgextra/i2/123456.jpg"
-  ],
-  "category": "Home & Garden",
-  "attributes": {
-    "Color": "Multi-color",
-    "Power": "5W",
-    "Material": "Plastic"
-  }
-}
-```
-
-### **Visual Output Examples**
-
-#### **Before Processing**
-```
-🌐 1688.com Product Page
-├── Chinese product name
-├── Chinese description
-├── Chinese price (¥)
-└── Multiple images
+output/
+├── 2025-07-10_15-00/
+│   ├── woocommerce_import_20250710_150000.csv
+│   ├── backup_woocommerce_import_20250710_150000.json
+│   └── scraper_logs_20250710_150000.txt
+└── logs/
+    ├── scraper_20250710_150000.log
+    └── errors_20250710_150000.log
 ```
 
-#### **After Processing**
+## 📁 File Structure
+
 ```
-📦 WooCommerce Ready
-├── English product name
-├── English description (HTML formatted)
-├── USD price ($)
-├── Filtered product images
-└── Proper categories
+1668_product_scraper/
+├── professional_gui.py          # Professional GUI application
+├── gui_launcher.py             # Basic GUI application
+├── enhanced_scraper.py         # Enhanced scraper with GUI integration
+├── woocommerce_1688_scraper.py # Core scraping logic
+├── run_scraper.py              # Command line runner
+├── lang.json                   # Multi-language translations
+├── settings.json               # User settings (auto-generated)
+├── urls.txt                    # Input URLs file
+├── requirements.txt            # Python dependencies
+├── README.md                   # This file
+├── output/                     # Generated CSV files
+├── logs/                       # Log files
+└── temp_downloads/             # Temporary files
 ```
-
-### **🎯 WooCommerce Import Process**
-
-#### **Step 1: Generate CSV**
-```bash
-python run_scraper.py
-# Output: woocommerce_import_20250711_143022.csv
-```
-
-#### **Step 2: WordPress Admin**
-1. Login to WordPress Admin
-2. Go to **WooCommerce → Products → Import**
-3. Click **"Choose File"** and select your CSV
-4. Click **"Continue"**
-
-#### **Step 3: Field Mapping**
-```
-WooCommerce Field Mapping:
-├── Name → Product Name
-├── Description → Full Description
-├── Short Description → Short Description
-├── Regular Price → Price
-├── Images → Product Images
-├── Categories → Product Categories
-├── Type → Product Type (simple)
-└── SKU → Auto-generated SKU
-```
-
-#### **Step 4: Import**
-- Click **"Run the importer"**
-- Wait for completion
-- Check your products in WooCommerce
-
----
 
 ## 🔧 Configuration
 
-### **Main Configuration Options**
-
-#### **1. Request Settings**
-```python
-# In woocommerce_1688_scraper.py
-DELAY_BETWEEN_REQUESTS = 3    # Seconds between requests
-MAX_RETRIES = 3               # Retry attempts for failed requests
-TIMEOUT = 30                  # Request timeout
-USER_AGENT = "Mozilla/5.0..." # Browser user agent
+### Settings File (`settings.json`)
+```json
+{
+  "input_file": "urls.txt",
+  "output_folder": "output",
+  "output_language": "English",
+  "translation_language": "English",
+  "auto_translate": true,
+  "image_optimization": true,
+  "scraping_delay": 2,
+  "url_limit": 0,
+  "timestamp_folders": true,
+  "backup_files": true,
+  "csv_prefix": "woocommerce_import",
+  "save_errors": true,
+  "retry_failed": true,
+  "check_updates": true
+}
 ```
 
-#### **2. Extraction Settings**
-```python
-# Description extraction selectors
-DESCRIPTION_SELECTORS = [
-    '#description .html-description',
-    '.product-description',
-    '.desc-content'
-]
+### Language File (`lang.json`)
+- English and Arabic translations
+- Dynamic interface language switching
+- Extensible for additional languages
 
-# Image filtering
-IMAGE_FILTERS = [
-    'video', 'logo', 'icon', 'placeholder'
-]
+## 📊 Output Format
+
+### WooCommerce CSV Structure
+```csv
+Name,Description,Short Description,SKU,Price,Categories,Images,URL,Stock Status,Type,Status
+Product Name,Full description...,Short desc...,SKU123,29.99,Category1,image1.jpg,url,instock,simple,publish
 ```
 
-#### **3. Output Settings**
-```python
-# CSV export options
-CSV_ENCODING = 'utf-8-sig'    # Excel compatibility
-BACKUP_FILES = True           # Create backup files
-LOG_LEVEL = 'INFO'            # Logging level
-```
+### Generated Files
+- **CSV Files**: WooCommerce import ready
+- **JSON Backups**: Raw data backup
+- **Log Files**: Detailed operation logs
+- **Error Logs**: Error tracking and debugging
 
----
+## 🚨 Troubleshooting
 
-## ❓ Troubleshooting
+### Common Issues
 
-### **Common Issues & Solutions**
+**1. Unicode Encoding Errors**
+- Fixed in latest version
+- Use `professional_gui.py` for best compatibility
 
-#### **1. "No products were processed successfully"**
-**Problem:** All products failed to extract
-**Solutions:**
-```bash
-# Check your URLs are valid
-python -c "import requests; print(requests.get('https://detail.1688.com/offer/123456789.html').status_code)"
+**2. Scraper Not Starting**
+- Check if URLs are valid 1688.com links
+- Ensure all dependencies are installed
+- Check log files for detailed errors
 
-# Check network connection
-ping detail.1688.com
+**3. No Images Extracted**
+- Images are automatically filtered for quality
+- Check network connection
+- Verify URL accessibility
 
-# Try with fewer URLs first
-# Edit urls.txt to include only 2-3 URLs
-```
+**4. Translation Issues**
+- Disable auto-translation in settings
+- Check internet connection for translation service
+- Use manual language selection
 
-#### **2. "Failed to fetch page"**
-**Problem:** Network or blocking issues
-**Solutions:**
-```python
-# Increase delays in the script
-DELAY_BETWEEN_REQUESTS = 5  # Increase from 3 to 5
+### Error Logs
+- Check `logs/errors_*.log` for detailed error information
+- Review `logs/scraper_*.log` for operation details
+- Use GUI log viewer for real-time monitoring
 
-# Use different user agent
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-```
+## 🔄 Updates
 
-#### **3. "No description found"**
-**Problem:** Description extraction failing
-**Solutions:**
-```python
-# Add more selectors
-DESCRIPTION_SELECTORS.extend([
-    '.detail-content',
-    '[class*="desc"]',
-    '.product-details'
-])
-```
+### Version History
+- **v2.0**: Professional GUI with advanced features
+- **v1.5**: Enhanced scraper with better error handling
+- **v1.0**: Basic GUI and core functionality
 
-#### **4. "CSV file not generated"**
-**Problem:** No successful product processing
-**Solutions:**
-```bash
-# Check logs for errors
-cat scraper.log
-
-# Verify URLs are accessible
-# Try with a single, known working URL
-```
-
-### **Debug Mode**
-```bash
-# Enable detailed logging
-python run_scraper.py --debug
-
-# Check individual product extraction
-python -c "
-from woocommerce_1688_scraper import extract_product_info
-import requests
-html = requests.get('YOUR_URL').text
-print(extract_product_info(html, 'YOUR_URL'))
-"
-```
-
-### **Performance Optimization**
-
-#### **For Large Batches**
-```python
-# Increase delays to avoid rate limiting
-DELAY_BETWEEN_REQUESTS = 5
-MAX_CONCURRENT_REQUESTS = 1
-
-# Process in smaller batches
-# Split urls.txt into files with 10-20 URLs each
-```
-
-#### **For Better Success Rate**
-```python
-# Use more robust user agents
-USER_AGENTS = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
-]
-```
-
----
-
-## 📈 Performance & Statistics
-
-### **Typical Performance Metrics**
-```
-📊 Performance Statistics:
-├── Success Rate: 85-95%
-├── Processing Speed: 3-5 seconds per product
-├── Image Extraction: 3-15 images per product
-├── Description Length: 500-2000 characters
-└── CSV Generation: Instant
-```
-
-### **Resource Usage**
-```
-💻 System Requirements:
-├── CPU: Minimal (single-threaded)
-├── RAM: 50-100MB
-├── Storage: 1-10MB per product
-└── Network: 1-5MB per product
-```
-
----
-
-## 🔒 Security & Legal
-
-### **Important Disclaimers**
-- ⚠️ **Educational Use Only** - This tool is for educational purposes
-- ⚠️ **Respect Terms of Service** - Always check website terms before scraping
-- ⚠️ **Rate Limiting** - Built-in delays to avoid overwhelming servers
-- ⚠️ **No Warranty** - Use at your own risk
-
-### **Best Practices**
-```python
-# Always use delays between requests
-DELAY_BETWEEN_REQUESTS = 3
-
-# Respect robots.txt
-# Check website terms of service
-
-# Don't overload servers
-# Process in small batches
-```
-
----
-
-## 🤝 Contributing
-
-### **How to Contribute**
-1. **Fork the repository**
-2. **Create a feature branch**
-3. **Make your changes**
-4. **Test thoroughly**
-5. **Submit a pull request**
-
-### **Development Setup**
-```bash
-# Clone the repository
-git clone https://github.com/yousefabdallah171/1668-product-scraper-to-woocommerce-without-api.git
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install development dependencies
-pip install -r requirements.txt
-```
-
-### **Testing**
-```bash
-# Run tests
-python -m pytest tests/
-
-# Test with sample URLs
-python run_scraper.py --test
-```
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-### **MIT License**
-```
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-```
-
----
+### Update Checking
+- Automatic update notifications
+- Manual update checking in settings
+- GitHub repository integration
 
 ## 📞 Support
 
-### **Getting Help**
-- 📧 **Create an Issue** - [GitHub Issues](https://github.com/yousefabdallah171/1668-product-scraper-to-woocommerce-without-api/issues)
-- 📖 **Check Documentation** - This README and code comments
-- 🔍 **Search Issues** - Look for similar problems
+### Contact Information
+- **Developer**: Rakmyat (https://rakmyat.com/)
+- **Email**: yoseabdallah866@gmail.com
+- **GitHub**: https://github.com/yousefabdallah171/1668-product-scraper-to-woocommerce-without-api
 
-### **Before Asking for Help**
-1. ✅ Check this README thoroughly
-2. ✅ Review the troubleshooting section
-3. ✅ Check existing GitHub issues
-4. ✅ Try with a single, known working URL
-5. ✅ Include error messages and logs
+### Getting Help
+1. Check the Help tab in the GUI
+2. Review error logs for specific issues
+3. Contact developer with detailed error information
+4. Check GitHub issues for known problems
 
----
+## 📄 License
 
-## 🎯 Roadmap
-
-### **Planned Features**
-- 🔄 **Multi-threading support** for faster processing
-- 🌐 **Proxy support** for better reliability
-- 📊 **Web interface** for easier usage
-- 🔍 **Advanced filtering** options
-- 📱 **Mobile app** companion
-
-### **Recent Updates**
-- ✅ **Enhanced description extraction** with multiple selectors
-- ✅ **Improved image filtering** and validation
-- ✅ **Better error handling** and logging
-- ✅ **Robust retry logic** for failed requests
-- ✅ **Comprehensive documentation** and examples
-
----
+This project is **100% FREE** for personal and commercial use. No licensing fees, subscriptions, or payments required.
 
 ## 🙏 Acknowledgments
 
-- **BeautifulSoup** - For HTML parsing
-- **Requests** - For HTTP requests
-- **Cloudscraper** - For bypassing protection
-- **Googletrans** - For translation features
-- **Pandas** - For CSV handling
+- Built with Python, Tkinter, and BeautifulSoup
+- Uses cloudscraper for anti-bot protection
+- Integrates with Google Translate API
+- WooCommerce compatible output format
 
 ---
 
-## 📊 Project Statistics
+**🎉 Enjoy your free, professional 1688 product scraper!**
 
-![GitHub stars](https://img.shields.io/github/stars/yousefabdallah171/1668-product-scraper-to-woocommerce-without-api)
-![GitHub forks](https://img.shields.io/github/forks/yousefabdallah171/1668-product-scraper-to-woocommerce-without-api)
-![GitHub issues](https://img.shields.io/github/issues/yousefabdallah171/1668-product-scraper-to-woocommerce-without-api)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/yousefabdallah171/1668-product-scraper-to-woocommerce-without-api)
-
----
-
-## 💰 **FREQUENTLY ASKED QUESTIONS**
-
-### **Q: Is this really free?**
-**A: YES!** This tool is 100% free with no hidden costs, subscriptions, or payments required.
-
-### **Q: Do I need any API keys?**
-**A: NO!** The tool works directly with 1688.com without requiring any API keys or third-party services.
-
-### **Q: Are there any usage limits?**
-**A: NO!** You can process as many products as you want without any restrictions.
-
-### **Q: Do I need to register or create an account?**
-**A: NO!** Just download and use - no registration or accounts required.
-
-### **Q: Will I be charged later?**
-**A: NO!** This is open-source software under MIT license - it's free forever.
-
-### **Q: Is the output ready for WooCommerce?**
-**A: YES!** The CSV files are specifically formatted for direct WooCommerce import with all required fields.
-
-### **Q: Do I need to modify the CSV before importing?**
-**A: NO!** The output is ready to use directly in WordPress WooCommerce import tool.
-
----
-
-## 🏢 **About the Developer**
-
-### **Rakmyat - Professional Web Development**
-- 🌐 **Website:** [https://rakmyat.com/](https://rakmyat.com/)
-- 📧 **Email:** [yoseabdallah866@gmail.com](mailto:yoseabdallah866@gmail.com)
-- 💼 **Services:** Web Development, E-commerce Solutions, Custom Scripts
-- 🛠️ **Specialties:** WordPress, WooCommerce, Python Automation, Web Scraping
-
-### **Freelance Services Available**
-- ✅ **Custom Web Scraping Solutions**
-- ✅ **WooCommerce Development**
-- ✅ **WordPress Customization**
-- ✅ **E-commerce Automation**
-- ✅ **Python Script Development**
-- ✅ **API Integration**
-- ✅ **Database Management**
-
-**📧 Contact for Freelance Work:** [yoseabdallah866@gmail.com](mailto:yoseabdallah866@gmail.com)
-
----
-
-**⭐ Star this repository if it helped you!**
-
-**🔄 Fork it if you want to contribute!**
-
-**📧 Report issues if you find bugs!**
-
----
-
-*Developed with ❤️ by [Rakmyat](https://rakmyat.com/) for the WooCommerce community*
-
-**🎉 ENJOY YOUR FREE 1688 PRODUCT SCRAPER! 🎉**
+*Developed with ❤️ by Rakmyat - Making e-commerce easier for everyone.*
