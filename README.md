@@ -2,6 +2,16 @@
 
 A powerful, feature-rich desktop application that scrapes product data from 1688.com and exports it into WooCommerce-compatible CSV files. **100% FREE** - No API keys, subscriptions, or payments required.
 
+---
+
+## 🚨 Recent Updates & Bug Fixes
+- **Critical IndentationError fixed** in core scraper logic
+- **Full code health check**: syntax, logic, and runtime issues addressed
+- **Professional GUI only**: Basic GUI removed for a streamlined experience
+- **Actively maintained**: Please report any issues or feature requests on [GitHub](https://github.com/yousefabdallah171/1668-product-scraper-to-woocommerce-without-api)
+
+---
+
 ## ✨ Features
 
 ### 🎛️ Advanced Settings Panel
@@ -47,31 +57,26 @@ A powerful, feature-rich desktop application that scrapes product data from 1688
 - **Organized Output**: Timestamped folders, backup files
 - **Error Handling**: Comprehensive error logging and recovery
 
+---
+
 ## 🚀 Quick Start
 
 ### Prerequisites
-   ```bash
-# Install required Python packages
-   pip install -r requirements.txt
-   ```
-
-### Running the Professional GUI
-   ```bash
-# Launch the professional GUI
-python professional_gui.py
+```bash
+pip install -r requirements.txt
 ```
 
-### Running the Basic GUI
+### Running the Professional GUI
 ```bash
-# Launch the basic GUI
-python gui_launcher.py
+python professional_gui.py
 ```
 
 ### Command Line Usage
 ```bash
-# Run scraper directly
 python run_scraper.py
 ```
+
+---
 
 ## 📋 Usage Instructions
 
@@ -104,6 +109,8 @@ python run_scraper.py
 3. **Export Options**: Open in Excel, access output folders
 4. **Backup Files**: JSON backups for data recovery
 
+---
+
 ## 🛠️ Advanced Features
 
 ### Multi-language Interface
@@ -135,13 +142,13 @@ output/
     └── errors_20250710_150000.log
 ```
 
+---
+
 ## 📁 File Structure
 
 ```
 1668_product_scraper/
 ├── professional_gui.py          # Professional GUI application
-├── gui_launcher.py             # Basic GUI application
-├── enhanced_scraper.py         # Enhanced scraper with GUI integration
 ├── woocommerce_1688_scraper.py # Core scraping logic
 ├── run_scraper.py              # Command line runner
 ├── lang.json                   # Multi-language translations
@@ -153,6 +160,8 @@ output/
 ├── logs/                       # Log files
 └── temp_downloads/             # Temporary files
 ```
+
+---
 
 ## 🔧 Configuration
 
@@ -181,6 +190,8 @@ output/
 - Dynamic interface language switching
 - Extensible for additional languages
 
+---
+
 ## 📊 Output Format
 
 ### WooCommerce CSV Structure
@@ -194,6 +205,8 @@ Product Name,Full description...,Short desc...,SKU123,29.99,Category1,image1.jpg
 - **JSON Backups**: Raw data backup
 - **Log Files**: Detailed operation logs
 - **Error Logs**: Error tracking and debugging
+
+---
 
 ## 🚨 Troubleshooting
 
@@ -223,6 +236,8 @@ Product Name,Full description...,Short desc...,SKU123,29.99,Category1,image1.jpg
 - Review `logs/scraper_*.log` for operation details
 - Use GUI log viewer for real-time monitoring
 
+---
+
 ## 🔄 Updates
 
 ### Version History
@@ -234,6 +249,8 @@ Product Name,Full description...,Short desc...,SKU123,29.99,Category1,image1.jpg
 - Automatic update notifications
 - Manual update checking in settings
 - GitHub repository integration
+
+---
 
 ## 📞 Support
 
@@ -247,20 +264,3 @@ Product Name,Full description...,Short desc...,SKU123,29.99,Category1,image1.jpg
 2. Review error logs for specific issues
 3. Contact developer with detailed error information
 4. Check GitHub issues for known problems
-
-## 📄 License
-
-This project is **100% FREE** for personal and commercial use. No licensing fees, subscriptions, or payments required.
-
-## 🙏 Acknowledgments
-
-- Built with Python, Tkinter, and BeautifulSoup
-- Uses cloudscraper for anti-bot protection
-- Integrates with Google Translate API
-- WooCommerce compatible output format
-
----
-
-**🎉 Enjoy your free, professional 1688 product scraper!**
-
-*Developed with ❤️ by Rakmyat - Making e-commerce easier for everyone.*
