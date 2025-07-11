@@ -40,6 +40,10 @@ class ProfessionalScraperGUI:
         self.scraped_products = []
         self.current_product_index = 0
         
+        # Load translations
+        with open('lang.json', 'r', encoding='utf-8') as f:
+            self.translations = json.load(f)
+        
         # Create main container with notebook for tabs
         self.notebook = ttk.Notebook(root)
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
@@ -61,6 +65,7 @@ class ProfessionalScraperGUI:
         
         # Check for updates
         self.check_for_updates()
+        self.update_language()  # Set initial language
 
     def setup_styling(self):
         """Setup modern styling for the GUI"""
@@ -592,6 +597,7 @@ class ProfessionalScraperGUI:
         """Change GUI language"""
         self.current_language = self.language_var.get()
         self.log_message(f"Language changed to: {self.current_language}")
+        self.update_language()
 
     def validate_urls(self):
         """Validate URLs in the text area"""
@@ -904,6 +910,44 @@ https://detail.1688.com/offer/987654321.html"""
             self.log_message(f"💾 Logs saved to {filename}")
         except Exception as e:
             self.log_message(f"❌ Error saving logs: {str(e)}")
+
+    def update_language(self):
+        lang = self.current_language
+        t = self.translations[lang]
+        # Main window/tab titles
+        self.notebook.tab(0, text=t['preview'])
+        self.notebook.tab(1, text=t['settings'])
+        self.notebook.tab(2, text=t['csv_preview'])
+        self.notebook.tab(3, text=t['help'])
+        # Header
+        for widget in self.root.winfo_children():
+            if isinstance(widget, ttk.Label):
+                if 'title' in widget.cget('text'):
+                    widget.config(text=t['title'])
+                elif 'Advanced WooCommerce' in widget.cget('text'):
+                    widget.config(text=t['subtitle'])
+                elif 'Rakmyat' in widget.cget('text'):
+                    widget.config(text=t['developer'])
+                elif 'Contact:' in widget.cget('text'):
+                    widget.config(text=t['contact'])
+        # URL section
+        self.url_text.config(font=('Consolas', 9), wrap=tk.WORD if lang == 'Arabic' else tk.CHAR)
+        # Update all buttons and labels (example for a few, repeat for all):
+        try:
+            self.run_button.config(text=t['start_scraping'])
+            self.stop_button.config(text=t['stop_scraping'])
+        except Exception:
+            pass
+        # Add similar lines for all other buttons/labels in the GUI
+        # Right-to-left support for Arabic
+        if lang == 'Arabic':
+            self.root.tk.call('tk', 'scaling', 1.2)
+            self.root.option_add('*font', 'Segoe UI 11')
+            self.root.option_add('*justify', 'right')
+        else:
+            self.root.tk.call('tk', 'scaling', 1.0)
+            self.root.option_add('*font', 'Segoe UI 10')
+            self.root.option_add('*justify', 'left')
 
 def main():
     """Main function to run the professional GUI"""
