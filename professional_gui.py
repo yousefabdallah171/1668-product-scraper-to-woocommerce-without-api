@@ -45,6 +45,9 @@ class ProfessionalScraperGUI:
         with open('lang.json', 'r', encoding='utf-8') as f:
             self.translations = json.load(f)
         
+        # Store widget references for translation
+        self.translatable_widgets = {}
+        
         # Create main container with notebook for tabs
         self.notebook = ttk.Notebook(root)
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
@@ -144,19 +147,23 @@ class ProfessionalScraperGUI:
         # Title
         title_label = ttk.Label(header_frame, text="🛍️ Professional 1688 Product Scraper", style='Title.TLabel')
         title_label.pack()
+        self.translatable_widgets['title'] = title_label
         
         # Subtitle
         subtitle_label = ttk.Label(header_frame, text="Advanced WooCommerce Integration - No API Keys Required", style='Info.TLabel')
         subtitle_label.pack(pady=(5, 0))
+        self.translatable_widgets['subtitle'] = subtitle_label
         
         # Developer info
         dev_label = ttk.Label(header_frame, text="Developed by Rakmyat (https://rakmyat.com/) | Contact: yoseabdallah866@gmail.com", style='Info.TLabel')
         dev_label.pack(pady=(5, 0))
+        self.translatable_widgets['developer'] = dev_label
 
     def create_url_section(self, parent):
         """Create the URL management section"""
         url_frame = ttk.LabelFrame(parent, text="📋 Product URLs Management", padding="10")
         url_frame.pack(fill=tk.X, pady=(0, 10))
+        self.translatable_widgets['urls_management'] = url_frame
         
         # URL text area
         self.url_text = scrolledtext.ScrolledText(url_frame, height=8, width=80, font=('Consolas', 9))
@@ -166,16 +173,31 @@ class ProfessionalScraperGUI:
         button_frame = ttk.Frame(url_frame)
         button_frame.pack(fill=tk.X)
         
-        ttk.Button(button_frame, text="📁 Load URLs", command=self.load_urls, style='Secondary.TButton').pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Button(button_frame, text="💾 Save URLs", command=self.save_urls, style='Secondary.TButton').pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Button(button_frame, text="🧹 Clear All", command=self.clear_urls, style='Secondary.TButton').pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Button(button_frame, text="📝 Add Sample", command=self.add_sample_urls, style='Secondary.TButton').pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Button(button_frame, text="🔍 Validate URLs", command=self.validate_urls, style='Secondary.TButton').pack(side=tk.LEFT)
+        load_btn = ttk.Button(button_frame, text="📁 Load URLs", command=self.load_urls, style='Secondary.TButton')
+        load_btn.pack(side=tk.LEFT, padx=(0, 10))
+        self.translatable_widgets['load_urls'] = load_btn
+        
+        save_btn = ttk.Button(button_frame, text="💾 Save URLs", command=self.save_urls, style='Secondary.TButton')
+        save_btn.pack(side=tk.LEFT, padx=(0, 10))
+        self.translatable_widgets['save_urls'] = save_btn
+        
+        clear_btn = ttk.Button(button_frame, text="🧹 Clear All", command=self.clear_urls, style='Secondary.TButton')
+        clear_btn.pack(side=tk.LEFT, padx=(0, 10))
+        self.translatable_widgets['clear_all'] = clear_btn
+        
+        sample_btn = ttk.Button(button_frame, text="📝 Add Sample", command=self.add_sample_urls, style='Secondary.TButton')
+        sample_btn.pack(side=tk.LEFT, padx=(0, 10))
+        self.translatable_widgets['add_sample'] = sample_btn
+        
+        validate_btn = ttk.Button(button_frame, text="🔍 Validate URLs", command=self.validate_urls, style='Secondary.TButton')
+        validate_btn.pack(side=tk.LEFT)
+        self.translatable_widgets['validate_urls'] = validate_btn
 
     def create_scraper_controls(self, parent):
         """Create the scraper controls section"""
         control_frame = ttk.LabelFrame(parent, text="🚀 Scraper Controls", padding="10")
         control_frame.pack(fill=tk.X, pady=(0, 10))
+        self.translatable_widgets['scraper_controls'] = control_frame
         
         # Control buttons
         button_frame = ttk.Frame(control_frame)
@@ -189,6 +211,7 @@ class ProfessionalScraperGUI:
             style='Primary.TButton'
         )
         self.run_button.pack(side=tk.LEFT, padx=(0, 10))
+        self.translatable_widgets['start_scraping'] = self.run_button
         
         # Stop Scraping Button
         self.stop_button = ttk.Button(
@@ -199,28 +222,43 @@ class ProfessionalScraperGUI:
             state='disabled'
         )
         self.stop_button.pack(side=tk.LEFT, padx=(0, 10))
+        self.translatable_widgets['stop_scraping'] = self.stop_button
         
         # Open Output Folder Button
-        ttk.Button(
+        output_btn = ttk.Button(
             button_frame, 
             text="📂 Open Output", 
             command=self.open_output_folder, 
             style='Secondary.TButton'
-        ).pack(side=tk.LEFT, padx=(0, 10))
+        )
+        output_btn.pack(side=tk.LEFT, padx=(0, 10))
+        self.translatable_widgets['open_output'] = output_btn
         
-        # Open CSV in Excel Button
-        ttk.Button(
+        # Open CSV Button
+        csv_btn = ttk.Button(
             button_frame, 
             text="📊 Open CSV", 
             command=self.open_csv_file, 
             style='Secondary.TButton'
-        ).pack(side=tk.LEFT, padx=(0, 10))
+        )
+        csv_btn.pack(side=tk.LEFT, padx=(0, 10))
+        self.translatable_widgets['open_csv'] = csv_btn
+        
+        # Help Button
+        help_btn = ttk.Button(
+            button_frame, 
+            text="❓ Help", 
+            command=lambda: self.notebook.select(3), 
+            style='Secondary.TButton'
+        )
+        help_btn.pack(side=tk.LEFT)
+        self.translatable_widgets['help'] = help_btn
         
         # Language selector
         ttk.Label(button_frame, text="Language:", style='Info.TLabel').pack(side=tk.LEFT, padx=(20, 5))
         self.language_var = tk.StringVar(value=self.current_language)
-        language_combo = ttk.Combobox(button_frame, textvariable=self.language_var, 
-                                     values=["English", "Arabic"], width=10)
+        language_combo = ttk.Combobox(button_frame, textvariable=self.language_var,
+                                     values=["English", "Arabic"], state="readonly", width=10)
         language_combo.pack(side=tk.LEFT, padx=(0, 10))
         language_combo.bind('<<ComboboxSelected>>', self.change_language)
 
@@ -228,55 +266,66 @@ class ProfessionalScraperGUI:
         """Create the progress tracking section"""
         progress_frame = ttk.LabelFrame(parent, text="📊 Progress Tracking", padding="10")
         progress_frame.pack(fill=tk.X, pady=(0, 10))
+        self.translatable_widgets['progress_tracking'] = progress_frame
         
         # Progress bar
         self.progress_var = tk.DoubleVar()
         self.progress_bar = ttk.Progressbar(progress_frame, variable=self.progress_var, maximum=100)
         self.progress_bar.pack(fill=tk.X, pady=(0, 5))
         
-        # Progress labels
-        progress_labels_frame = ttk.Frame(progress_frame)
-        progress_labels_frame.pack(fill=tk.X)
-        
-        self.progress_text = ttk.Label(progress_labels_frame, text="Ready to start", style='Info.TLabel')
+        # Progress text
+        self.progress_text = ttk.Label(progress_frame, text="Ready to scrape", style='Info.TLabel')
         self.progress_text.pack(side=tk.LEFT)
+        self.translatable_widgets['ready'] = self.progress_text
         
-        self.progress_percent = ttk.Label(progress_labels_frame, text="0%", style='Info.TLabel')
+        # Progress percentage
+        self.progress_percent = ttk.Label(progress_frame, text="0%", style='Info.TLabel')
         self.progress_percent.pack(side=tk.RIGHT)
         
-        # Current product info
-        self.current_product_frame = ttk.Frame(progress_frame)
-        self.current_product_frame.pack(fill=tk.X, pady=(10, 0))
+        # Current product
+        current_frame = ttk.Frame(progress_frame)
+        current_frame.pack(fill=tk.X, pady=(5, 0))
         
-        ttk.Label(self.current_product_frame, text="Current Product:", style='Header.TLabel').pack(side=tk.LEFT)
-        self.current_product_label = ttk.Label(self.current_product_frame, text="None", style='Info.TLabel')
-        self.current_product_label.pack(side=tk.LEFT, padx=(10, 0))
+        ttk.Label(current_frame, text="Current Product:", style='Info.TLabel').pack(side=tk.LEFT)
+        self.current_product_label = ttk.Label(current_frame, text="None", style='Info.TLabel')
+        self.current_product_label.pack(side=tk.LEFT, padx=(5, 0))
+        self.translatable_widgets['current_product'] = self.current_product_label
 
     def create_log_section(self, parent):
-        """Create the log display section"""
-        log_frame = ttk.LabelFrame(parent, text="📊 Scraper Logs", padding="10")
+        """Create the log section"""
+        log_frame = ttk.LabelFrame(parent, text="📋 Scraper Logs", padding="10")
         log_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
+        self.translatable_widgets['scraper_logs'] = log_frame
         
         # Log text area
-        self.log_text = scrolledtext.ScrolledText(log_frame, height=12, width=80, font=('Consolas', 8))
-        self.log_text.pack(fill=tk.BOTH, expand=True)
+        self.log_text = scrolledtext.ScrolledText(log_frame, height=8, font=('Consolas', 9))
+        self.log_text.pack(fill=tk.BOTH, expand=True, pady=(0, 5))
         
         # Log control buttons
         log_button_frame = ttk.Frame(log_frame)
-        log_button_frame.pack(fill=tk.X, pady=(10, 0))
+        log_button_frame.pack(fill=tk.X)
         
-        ttk.Button(log_button_frame, text="🧹 Clear Logs", command=self.clear_logs, style='Secondary.TButton').pack(side=tk.LEFT)
-        ttk.Button(log_button_frame, text="💾 Save Logs", command=self.save_logs, style='Secondary.TButton').pack(side=tk.LEFT, padx=(10, 0))
-        ttk.Button(log_button_frame, text="📁 Open Log Folder", command=self.open_log_folder, style='Secondary.TButton').pack(side=tk.LEFT, padx=(10, 0))
+        clear_log_btn = ttk.Button(log_button_frame, text="🧹 Clear Logs", command=self.clear_logs, style='Secondary.TButton')
+        clear_log_btn.pack(side=tk.LEFT, padx=(0, 10))
+        self.translatable_widgets['clear_logs'] = clear_log_btn
+        
+        save_log_btn = ttk.Button(log_button_frame, text="💾 Save Logs", command=self.save_logs, style='Secondary.TButton')
+        save_log_btn.pack(side=tk.LEFT, padx=(0, 10))
+        self.translatable_widgets['save_logs'] = save_log_btn
+        
+        open_log_btn = ttk.Button(log_button_frame, text="📁 Open Log Folder", command=self.open_log_folder, style='Secondary.TButton')
+        open_log_btn.pack(side=tk.LEFT)
+        self.translatable_widgets['open_log_folder'] = open_log_btn
 
     def create_status_section(self, parent):
         """Create the status section"""
         status_frame = ttk.Frame(parent)
-        status_frame.pack(fill=tk.X, pady=(10, 0))
+        status_frame.pack(fill=tk.X, pady=(0, 10))
         
         # Status label
-        self.status_label = ttk.Label(status_frame, text="Ready to scrape", style='Info.TLabel')
+        self.status_label = ttk.Label(status_frame, text="✅ Ready", style='Success.TLabel')
         self.status_label.pack(side=tk.LEFT)
+        self.translatable_widgets['ready'] = self.status_label
         
         # Statistics
         self.stats_label = ttk.Label(status_frame, text="Products: 0 | Success: 0 | Failed: 0", style='Info.TLabel')
@@ -924,42 +973,62 @@ https://detail.1688.com/offer/987654321.html"""
             self.log_message(f"❌ Error saving logs: {str(e)}")
 
     def update_language(self):
+        """Comprehensive language update for all GUI elements"""
         lang = self.current_language
         t = self.translations[lang]
-        # Main window/tab titles
+        
+        # Update tab titles
         self.notebook.tab(0, text=t['preview'])
         self.notebook.tab(1, text=t['settings'])
         self.notebook.tab(2, text=t['csv_preview'])
         self.notebook.tab(3, text=t['help'])
-        # Header
-        for widget in self.root.winfo_children():
-            if isinstance(widget, ttk.Label):
-                if 'title' in widget.cget('text'):
-                    widget.config(text=t['title'])
-                elif 'Advanced WooCommerce' in widget.cget('text'):
-                    widget.config(text=t['subtitle'])
-                elif 'Rakmyat' in widget.cget('text'):
-                    widget.config(text=t['developer'])
-                elif 'Contact:' in widget.cget('text'):
-                    widget.config(text=t['contact'])
-        # URL section
-        self.url_text.config(font=('Consolas', 9), wrap=tk.WORD if lang == 'Arabic' else tk.CHAR)
-        # Update all buttons and labels (example for a few, repeat for all):
+        
+        # Update all stored widget references
+        for widget_name, widget in self.translatable_widgets.items():
+            if widget_name in t:
+                try:
+                    if isinstance(widget, ttk.Button):
+                        widget.config(text=t[widget_name])
+                    elif isinstance(widget, ttk.Label):
+                        widget.config(text=t[widget_name])
+                    elif isinstance(widget, ttk.LabelFrame):
+                        widget.config(text=t[widget_name])
+                    elif isinstance(widget, tk.Label):
+                        widget.config(text=t[widget_name])
+                except Exception as e:
+                    print(f"Error updating widget {widget_name}: {e}")
+        
+        # Update specific widgets that might not be in the stored references
         try:
-            self.run_button.config(text=t['start_scraping'])
-            self.stop_button.config(text=t['stop_scraping'])
-        except Exception:
-            pass
-        # Add similar lines for all other buttons/labels in the GUI
+            if hasattr(self, 'run_button'):
+                self.run_button.config(text=t['start_scraping'])
+            if hasattr(self, 'stop_button'):
+                self.stop_button.config(text=t['stop_scraping'])
+            if hasattr(self, 'status_label'):
+                current_status = self.status_label.cget('text')
+                if 'Ready' in current_status:
+                    self.status_label.config(text=t['ready'])
+                elif 'Scraping' in current_status:
+                    self.status_label.config(text=t['scraping_progress'])
+                elif 'Stopping' in current_status:
+                    self.status_label.config(text=t['stopping'])
+        except Exception as e:
+            print(f"Error updating specific widgets: {e}")
+        
         # Right-to-left support for Arabic
         if lang == 'Arabic':
             self.root.tk.call('tk', 'scaling', 1.2)
             self.root.option_add('*font', 'Segoe UI 11')
             self.root.option_add('*justify', 'right')
+            # Set text direction for text widgets
+            if hasattr(self, 'url_text'):
+                self.url_text.config(wrap=tk.WORD)
         else:
             self.root.tk.call('tk', 'scaling', 1.0)
             self.root.option_add('*font', 'Segoe UI 10')
             self.root.option_add('*justify', 'left')
+            if hasattr(self, 'url_text'):
+                self.url_text.config(wrap=tk.CHAR)
 
 def main():
     """Main function to run the professional GUI"""
