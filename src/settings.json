@@ -1,0 +1,16 @@
+{
+  "input_file": "urls.txt",
+  "output_folder": "output",
+  "output_language": "ar",
+  "translation_language": "ar",
+  "auto_translate": true,
+  "image_optimization": false,
+  "scraping_delay": 1,
+  "url_limit": 0,
+  "timestamp_folders": true,
+  "backup_files": true,
+  "csv_prefix": "woocommerce_import",
+  "save_errors": true,
+  "retry_failed": true,
+  "check_updates": true
+}

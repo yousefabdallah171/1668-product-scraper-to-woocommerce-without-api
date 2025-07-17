@@ -1,0 +1,21 @@
+# Core Dependencies - Updated and Stable Versions
+requests>=2.31.0           # HTTP client
+beautifulsoup4>=4.12.2     # HTML parsing
+lxml>=4.9.3                # Fast XML/HTML parser
+
+# Data handling
+pandas>=2.1.4             # Data manipulation (optional)
+
+# Utilities
+python-dateutil>=2.8.2     # Date/time handling
+urllib3>=2.1.0             # URL handling
+certifi>=2023.11.17        # SSL certificates
+charset-normalizer>=3.3.2  # Character encoding detection
+
+# Optional: If you want to use cloudscraper for anti-bot bypass
+# cloudscraper>=1.2.71
+
+# Optional: Translation services (if needed)
+# Note: These are often unreliable, the improved script uses basic translation
+# googletrans==4.0.0rc1     # More stable than 3.1.0a0
+# translators>=5.8.9        # Alternative translation service 
